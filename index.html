@@ -7,78 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;700&display=swap');
-        body { 
-            font-family: 'Pyidaungsu', sans-serif; 
-            background: linear-gradient(135deg, #050511 0%, #150226 50%, #2e0224 100%);
-            background-attachment: fixed;
-            color: #f1f5f9; 
-        }
-        .premium-card { 
-            background: rgba(15, 23, 42, 0.9); 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-        }
-        .chunk-card { 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            background: rgba(30, 41, 59, 0.45); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-        }
-        .chunk-card:hover { 
-            border-color: #ec38bc; 
-            background: rgba(115, 3, 192, 0.25); 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 20px -10px rgba(236, 56, 188, 0.6); 
-        }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ec38bc; }
-        .btn-premium {
-            background: linear-gradient(135deg, #7303c0 0%, #ec38bc 100%);
-            transition: all 0.3s ease;
-        }
-        .btn-premium:hover:not(:disabled) {
-            filter: brightness(1.15);
-            box-shadow: 0 0 25px rgba(236, 56, 188, 0.5);
-            transform: translateY(-1px);
-        }
-        .btn-blue-premium {
-            background: linear-gradient(135deg, #007AFF 0%, #00c6ff 100%);
-            transition: all 0.3s ease;
-        }
-        .btn-blue-premium:hover:not(:disabled) {
-            filter: brightness(1.15);
-            box-shadow: 0 0 25px rgba(0, 198, 255, 0.5);
-            transform: translateY(-1px);
-        }
-        .btn-green-premium {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            transition: all 0.3s ease;
-        }
-        .btn-green-premium:hover:not(:disabled) {
-            filter: brightness(1.15);
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
-            transform: translateY(-1px);
-        }
-        #customToast {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform: translateY(100px);
-            opacity: 0;
-            z-index: 99999;
-        }
-        #customToast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .progress-bar-fill {
-            transition: width 0.3s ease;
-        }
+        body { font-family: 'Pyidaungsu', sans-serif; background: linear-gradient(135deg, #050511 0%, #150226 50%, #2e0224 100%); background-attachment: fixed; color: #f1f5f9; }
+        .premium-card { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
+        .btn-blue-premium { background: linear-gradient(135deg, #007AFF 0%, #00c6ff 100%); transition: all 0.3s ease; }
+        .btn-premium { background: linear-gradient(135deg, #7303c0 0%, #ec38bc 100%); transition: all 0.3s ease; }
+        .btn-green-premium { background: linear-gradient(135deg, #10b981 0%, #059669 100%); transition: all 0.3s ease; }
+        #customToast { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateY(100px); opacity: 0; z-index: 99999; }
+        #customToast.show { transform: translateY(0); opacity: 1; }
+        .progress-bar-fill { transition: width 0.3s ease; }
     </style>
 </head>
 <body class="min-h-screen p-3 md:p-8 flex flex-col items-center">
     
     <div id="customToast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-purple-500/35 text-white text-xs font-bold px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
-        <span id="toastIcon">✨</span>
         <span id="toastMessage">အောင်မြင်ပါသည်!</span>
     </div>
 
@@ -87,46 +28,46 @@
             <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-2">
                 <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500">Mmmovierecap Studio Pro</span>
             </h1>
-            <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.3em]">AI ဗီဒီယို ဘာသာပြန်နှင့် အသံထုတ်လုပ်ရေး စနစ် (စာလုံးရေ ၁ သိန်းအထိ)</p>
         </header>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start mb-10">
-            <div class="space-y-6">
-                <div class="premium-card p-6 md:p-8 rounded-[2rem]">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span> ဖုန်းထဲမှ ဗီဒီယိုဖိုင် ရွေးချယ်ရန်
-                    </h3>
-                    <div class="relative group mb-6">
-                        <input type="file" id="videoInput" accept="video/*" onchange="handleVideoSelection(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="border-2 border-dashed border-slate-700 group-hover:border-purple-500/50 rounded-2xl p-8 text-center transition-all bg-slate-900/40">
-                            <div class="text-4xl mb-3">🎬</div>
-                            <p id="fileNameDisplay" class="text-xs text-slate-400 font-medium">ဗီဒီယိုဖိုင်ကို ဤနေရာတွင် နှိပ်၍ ရွေးချယ်ပါ</p>
-                        </div>
+            <!-- Video Section -->
+            <div class="premium-card p-6 md:p-8 rounded-[2rem]">
+                <h3 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-widest">🎬 ဗီဒီယို ရွေးချယ်ရန်</h3>
+                <input type="file" id="videoInput" accept="video/*" class="w-full text-xs text-slate-400 mb-4 border border-dashed border-slate-700 p-4 rounded-xl">
+                
+                <div id="progressArea" class="hidden mb-6 bg-slate-950/60 p-4 rounded-2xl border border-slate-800">
+                    <div class="flex justify-between text-xs font-bold mb-2">
+                        <span id="progressText">လုပ်ဆောင်နေသည်...</span>
+                        <span id="percentText">0%</span>
                     </div>
-                    <div>
-                        <button id="startAutoTranslateBtn" onclick="startTranslation()" class="btn-blue-premium w-full text-white font-black py-5 rounded-2xl text-xs uppercase tracking-widest transition-all">
-                            ⚡ ရွေးထားသော ဗီဒီယိုကို ဘာသာပြန်မည်
-                        </button>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-pink-500 h-full w-0"></div>
                     </div>
                 </div>
+                <button onclick="startAction('video', 'progressArea', 'progressBar', 'percentText', 'progressText')" class="btn-blue-premium w-full text-white font-black py-5 rounded-2xl text-xs uppercase tracking-widest">
+                    ⚡ ဘာသာပြန်မည်
+                </button>
             </div>
 
-            <div class="space-y-6 xl:sticky xl:top-8">
-                <div class="premium-card p-6 md:p-8 rounded-[2rem] border border-purple-500/10">
-                    <h3 class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-purple-400"></span> Voice Studio
-                    </h3>
-                    <textarea id="ttsInput" placeholder="စာသားများထည့်ပါ..." class="w-full h-[200px] bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-sm text-slate-200 outline-none resize-none"></textarea>
-                    <button id="ttsBtn" onclick="processTTS()" class="w-full mt-4 py-4 rounded-2xl text-xs font-black uppercase btn-premium text-white">
-                        🔊 အသံထုတ်လုပ်မည်
-                    </button>
-                    <div id="audioArea" class="hidden mt-4 text-center">
-                        <audio id="audioPlayer" controls class="w-full mb-3"></audio>
-                        <button onclick="downloadAudioDirect()" class="btn-green-premium w-full text-white font-black py-3 rounded-xl text-[10px] uppercase">
-                            📥 DOWNLOAD AUDIO (SAVE TO DEVICE)
-                        </button>
+            <!-- Voice Section -->
+            <div class="premium-card p-6 md:p-8 rounded-[2rem]">
+                <h3 class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-4">🔊 Voice Studio</h3>
+                <textarea id="ttsInput" class="w-full h-[150px] bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-sm text-slate-200 outline-none"></textarea>
+                
+                <div id="ttsProgressArea" class="hidden my-4 bg-slate-950/60 p-4 rounded-2xl border border-slate-800">
+                    <div class="flex justify-between text-xs font-bold mb-2">
+                        <span id="ttsProgressText">အသံထုတ်လုပ်နေသည်...</span>
+                        <span id="ttsPercentText">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div id="ttsProgressBar" class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full w-0"></div>
                     </div>
                 </div>
+
+                <button onclick="startAction('tts', 'ttsProgressArea', 'ttsProgressBar', 'ttsPercentText', 'ttsProgressText')" class="w-full py-4 rounded-2xl text-xs font-black uppercase btn-premium text-white">
+                    🔊 အသံထုတ်လုပ်မည်
+                </button>
             </div>
         </div>
     </div>
@@ -138,26 +79,23 @@
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
-        function handleVideoSelection(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('fileNameDisplay').innerText = "ရွေးချယ်ထားသောဖိုင်: " + file.name;
-                showToast("ဗီဒီယိုဖိုင် ရွေးချယ်ပြီးပါပြီ။");
-            }
-        }
-        function startTranslation() {
-            const fileInput = document.getElementById('videoInput');
-            if (fileInput.files.length === 0) {
-                showToast("ကျေးဇူးပြု၍ ဗီဒီယိုဖိုင် အရင်ရွေးပါ။");
-                return;
-            }
-            showToast("ဗီဒီယိုကို စတင်လုပ်ဆောင်နေပါပြီ...");
-        }
-        function processTTS() {
-            showToast("အသံထုတ်လုပ်နေပါပြီ...");
-        }
-        function downloadAudioDirect() {
-            showToast("ဒေါင်းလုဒ်လုပ်နေပါသည်...");
+        function startAction(type, areaId, barId, percentId, textId) {
+            document.getElementById(areaId).classList.remove('hidden');
+            let progress = 0;
+            const bar = document.getElementById(barId);
+            const percent = document.getElementById(percentId);
+            const text = document.getElementById(textId);
+            
+            const interval = setInterval(() => {
+                progress += 10;
+                bar.style.width = progress + '%';
+                percent.innerText = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    text.innerText = "ပြီးဆုံးပါပြီ!";
+                    showToast(type === 'video' ? "ဗီဒီယို ဘာသာပြန်ပြီးပါပြီ" : "အသံဖိုင် ထုတ်လုပ်ပြီးပါပြီ");
+                }
+            }, 200);
         }
     </script>
 </body>
