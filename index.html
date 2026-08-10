@@ -94,19 +94,18 @@
             <div class="space-y-6">
                 <div class="premium-card p-6 md:p-8 rounded-[2rem]">
                     <h3 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span> ဗီဒီယိုဖိုင် ထည့်သွင်းရန်
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span> ဖုန်းထဲမှ ဗီဒီယိုဖိုင် ရွေးချယ်ရန်
                     </h3>
                     <div class="relative group mb-6">
-                        <input type="file" id="videoInput" accept="video/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <input type="file" id="videoInput" accept="video/*" onchange="handleVideoSelection(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                         <div class="border-2 border-dashed border-slate-700 group-hover:border-purple-500/50 rounded-2xl p-8 text-center transition-all bg-slate-900/40">
                             <div class="text-4xl mb-3">🎬</div>
-                            <p id="fileNameDisplay" class="text-xs text-slate-400 font-medium">ဗီဒီယိုဖိုင်ကို ဤနေရာတွင် ရွေးချယ်ပါ (သို့) ဆွဲထည့်ပါ</p>
-                            <p id="videoDurationDisplay" class="text-[11px] text-purple-400 mt-2 font-bold hidden"></p>
+                            <p id="fileNameDisplay" class="text-xs text-slate-400 font-medium">ဗီဒီယိုဖိုင်ကို ဤနေရာတွင် နှိပ်၍ ရွေးချယ်ပါ</p>
                         </div>
                     </div>
                     <div>
-                        <button id="startAutoTranslateBtn" disabled class="btn-blue-premium w-full disabled:opacity-30 disabled:cursor-not-allowed text-white font-black py-5 rounded-2xl text-xs uppercase tracking-widest transition-all">
-                            ⚡ အစအဆုံး အလွယ်တကူ ဘာသာပြန်မည်
+                        <button id="startAutoTranslateBtn" onclick="startTranslation()" class="btn-blue-premium w-full text-white font-black py-5 rounded-2xl text-xs uppercase tracking-widest transition-all">
+                            ⚡ ရွေးထားသော ဗီဒီယိုကို ဘာသာပြန်မည်
                         </button>
                     </div>
                 </div>
@@ -118,7 +117,7 @@
                         <span class="w-2 h-2 rounded-full bg-purple-400"></span> Voice Studio
                     </h3>
                     <textarea id="ttsInput" placeholder="စာသားများထည့်ပါ..." class="w-full h-[200px] bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-sm text-slate-200 outline-none resize-none"></textarea>
-                    <button id="ttsBtn" class="w-full mt-4 py-4 rounded-2xl text-xs font-black uppercase btn-premium text-white">
+                    <button id="ttsBtn" onclick="processTTS()" class="w-full mt-4 py-4 rounded-2xl text-xs font-black uppercase btn-premium text-white">
                         🔊 အသံထုတ်လုပ်မည်
                     </button>
                     <div id="audioArea" class="hidden mt-4 text-center">
@@ -138,6 +137,24 @@
             document.getElementById('toastMessage').innerText = msg;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
+        }
+        function handleVideoSelection(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('fileNameDisplay').innerText = "ရွေးချယ်ထားသောဖိုင်: " + file.name;
+                showToast("ဗီဒီယိုဖိုင် ရွေးချယ်ပြီးပါပြီ။");
+            }
+        }
+        function startTranslation() {
+            const fileInput = document.getElementById('videoInput');
+            if (fileInput.files.length === 0) {
+                showToast("ကျေးဇူးပြု၍ ဗီဒီယိုဖိုင် အရင်ရွေးပါ။");
+                return;
+            }
+            showToast("ဗီဒီယိုကို စတင်လုပ်ဆောင်နေပါပြီ...");
+        }
+        function processTTS() {
+            showToast("အသံထုတ်လုပ်နေပါပြီ...");
         }
         function downloadAudioDirect() {
             showToast("ဒေါင်းလုဒ်လုပ်နေပါသည်...");
