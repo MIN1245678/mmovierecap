@@ -11,6 +11,7 @@
         .premium-card { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
         .btn-blue-premium { background: linear-gradient(135deg, #007AFF 0%, #00c6ff 100%); transition: all 0.3s ease; }
         .btn-premium { background: linear-gradient(135deg, #7303c0 0%, #ec38bc 100%); transition: all 0.3s ease; }
+        .btn-green-premium { background: linear-gradient(135deg, #10b981 0%, #059669 100%); transition: all 0.3s ease; }
         #customToast { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateY(100px); opacity: 0; z-index: 99999; }
         #customToast.show { transform: translateY(0); opacity: 1; }
         .progress-bar-fill { transition: width 0.3s ease; }
@@ -47,15 +48,24 @@
                     </div>
                 </div>
 
-                <button onclick="startAction('video', 'progressArea', 'progressBar', 'percentText', 'progressText')" class="btn-blue-premium w-full text-white font-black py-5 rounded-2xl text-xs uppercase tracking-widest shadow-lg">
+                <button onclick="startTranslation()" class="btn-blue-premium w-full text-white font-black py-5 rounded-2xl text-xs uppercase tracking-widest shadow-lg mb-6">
                     ⚡ ရွေးထားသော ဗီဒီယိုကို ဘာသာပြန်မည်
                 </button>
+
+                <!-- Translation Output Area -->
+                <div id="outputArea" style="display: none;" class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase">📝 ဘာသာပြန်စာသားများ (Myanmar Subtitles)</span>
+                        <button onclick="copyTranslatedText()" class="btn-green-premium text-white text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase">📋 Copy Text</button>
+                    </div>
+                    <textarea id="translatedOutput" readonly class="w-full h-[150px] bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-sm text-slate-200 outline-none resize-none">ဗီဒီယိုကို ဘာသာပြန်ဆိုပြီးပါက ဤနေရာတွင် စာသားများပေါ်လာပါမည်...</textarea>
+                </div>
             </div>
 
             <!-- Voice Section -->
             <div class="premium-card p-6 md:p-8 rounded-[2rem]">
                 <h3 class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-4">🔊 Voice Studio</h3>
-                <textarea id="ttsInput" placeholder="စာသားများထည့်ပါ..." class="w-full h-[150px] bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-sm text-slate-200 outline-none resize-none mb-4"></textarea>
+                <textarea id="ttsInput" placeholder="အသံထုတ်ရန် စာသားများထည့်ပါ..." class="w-full h-[150px] bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-sm text-slate-200 outline-none resize-none mb-4"></textarea>
                 
                 <div id="ttsProgressArea" style="display: none;" class="mb-4 bg-slate-950/60 p-4 rounded-2xl border border-slate-800">
                     <div class="flex justify-between text-xs font-bold mb-2 text-slate-300">
@@ -67,7 +77,7 @@
                     </div>
                 </div>
 
-                <button onclick="startAction('tts', 'ttsProgressArea', 'ttsProgressBar', 'ttsPercentText', 'ttsProgressText')" class="w-full py-4 rounded-2xl text-xs font-black uppercase btn-premium text-white shadow-lg">
+                <button onclick="startTTS()" class="w-full py-4 rounded-2xl text-xs font-black uppercase btn-premium text-white shadow-lg">
                     🔊 အသံထုတ်လုပ်မည်
                 </button>
             </div>
@@ -88,27 +98,22 @@
                 showToast("ဗီဒီယိုဖိုင် ရွေးချယ်ပြီးပါပြီ။");
             }
         }
-        function startAction(type, areaId, barId, percentId, textId) {
-            if (type === 'video') {
-                const fileInput = document.getElementById('videoInput');
-                if (fileInput.files.length === 0) {
-                    showToast("ကျေးဇူးပြု၍ ဗီဒီယိုဖိုင် အရင်ရွေးပါ။");
-                    return;
-                }
-            } else {
-                const ttsInput = document.getElementById('ttsInput').value;
-                if (!ttsInput.trim()) {
-                    showToast("ကျေးဇူးပြု၍ စာသားများ ထည့်ပါ။");
-                    return;
-                }
+        function startTranslation() {
+            const fileInput = document.getElementById('videoInput');
+            if (fileInput.files.length === 0) {
+                showToast("ကျေးဇူးပြု၍ ဗီဒီယိုဖိုင် အရင်ရွေးပါ။");
+                return;
             }
 
-            const area = document.getElementById(areaId);
-            area.style.display = 'block';
+            const progressArea = document.getElementById('progressArea');
+            const outputArea = document.getElementById('outputArea');
+            progressArea.style.display = 'block';
+            outputArea.style.display = 'none';
+
             let progress = 0;
-            const bar = document.getElementById(barId);
-            const percent = document.getElementById(percentId);
-            const text = document.getElementById(textId);
+            const bar = document.getElementById('progressBar');
+            const percent = document.getElementById('percentText');
+            const text = document.getElementById('progressText');
             
             bar.style.width = '0%';
             percent.innerText = '0%';
@@ -120,9 +125,46 @@
                 if (progress >= 100) {
                     clearInterval(interval);
                     text.innerText = "ပြီးဆုံးပါပြီ!";
-                    showToast(type === 'video' ? "ဗီဒီယို ဘာသာပြန်ပြီးပါပြီ" : "အသံဖိုင် ထုတ်လုပ်ပြီးပါပြီ");
+                    progressArea.style.display = 'none';
+                    outputArea.style.display = 'block';
+                    document.getElementById('translatedOutput').value = "00:00:01,000 --> 00:00:05,000\nကြိုဆိုပါတယ်၊ ဤသည်မှာ သင်၏ ဗီဒီယိုအတွက် AI ဘာသာပြန်ဆိုထားသော မြန်မာစာတန်းထိုး ဖြစ်ပါသည်။\n\n00:00:06,000 --> 00:00:10,000\nဇာတ်လမ်းအနှစ်ချုပ်များကို အဆင်ပြေပြေ ဆက်လက်ဖန်တီးနိုင်ပါပြီ။";
+                    showToast("ဗီဒီယို ဘာသာပြန်ပြီးပါပြီ");
                 }
             }, 200);
+        }
+        function startTTS() {
+            const ttsInput = document.getElementById('ttsInput').value;
+            if (!ttsInput.trim()) {
+                showToast("ကျေးဇူးပြု၍ စာသားများ ထည့်ပါ။");
+                return;
+            }
+
+            const area = document.getElementById('ttsProgressArea');
+            area.style.display = 'block';
+            let progress = 0;
+            const bar = document.getElementById('ttsProgressBar');
+            const percent = document.getElementById('ttsPercentText');
+            const text = document.getElementById('ttsProgressText');
+            
+            bar.style.width = '0%';
+            percent.innerText = '0%';
+
+            const interval = setInterval(() => {
+                progress += 10;
+                bar.style.width = progress + '%';
+                percent.innerText = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    text.innerText = "ပြီးဆုံးပါပြီ!";
+                    showToast("အသံဖိုင် ထုတ်လုပ်ပြီးပါပြီ");
+                }
+            }, 200);
+        }
+        function copyTranslatedText() {
+            const outputText = document.getElementById('translatedOutput');
+            outputText.select();
+            navigator.clipboard.writeText(outputText.value);
+            showToast("စာသားများကို Copy ကူးပြီးပါပြီ!");
         }
     </script>
 </body>
