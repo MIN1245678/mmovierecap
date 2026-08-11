@@ -1,37 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mmmovierecap Studio</title>
+    <title>m recap - မြန်မာ Movie Recap Tool</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body style="background: #111; color: #fff; padding: 20px; font-family: sans-serif;">
-    <h2 style="text-align: center;">Mmmovierecap Studio Pro</h2>
-    
-    <div style="background: #222; padding: 20px; border-radius: 10px;">
-        <input type="file" id="vid" accept="video/*" style="width: 100%; margin-bottom: 10px;">
-        <button onclick="runApp()" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px;">ဘာသာပြန်မည်</button>
+<body>
+    <div class="container">
+        <header>
+            <h1>m recap</h1>
+            <p>မြန်မာ Movie Recap Tool - SRT & Voice Over Generator</p>
+        </header>
+
+        <main>
+            <!-- Input Section -->
+            <section class="input-section">
+                <h2>အဆင့် ၁: Movie Recap စာသား ထည့်သွင်းပါ</h2>
+                <textarea 
+                    id="recapText" 
+                    placeholder="Movie recap စာသားကို ဒီမှာ ကူးယူထည့်သွင်းပါ... (စာလုံးရေ ၂၆,၀၀၀ အထိ)"
+                    maxlength="26000"
+                    rows="10"
+                ></textarea>
+                <div class="word-count">
+                    စာလုံးရေ: <span id="wordCount">0</span> / 26,000
+                </div>
+            </section>
+
+            <!-- SRT Generator Section -->
+            <section class="srt-section">
+                <h2>အဆင့် ၂: SRT ဖိုင် ထုတ်ပေးမှု</h2>
+                <div class="form-group">
+                    <label for="srtDuration">အညွှန်းတစ်ခုစီ ကြာချိန် (စက္ကန့်):</label>
+                    <input type="number" id="srtDuration" value="5" min="1" max="10">
+                </div>
+                <button id="generateSrtBtn" class="btn btn-primary">SRT ဖိုင် ထုတ်ပေးမှု</button>
+                <div id="srtPreview" class="preview-box"></div>
+                <button id="downloadSrtBtn" class="btn btn-secondary" style="display:none;">SRT ဖိုင် Download လုပ်မှု</button>
+            </section>
+
+            <!-- Voice Over Section -->
+            <section class="voiceover-section">
+                <h2>အဆင့် ၃: Voice Over Script ထုတ်ပေးမှု</h2>
+                <div class="form-group">
+                    <label for="voiceoverFormat">Format ရွေးချယ်ပါ:</label>
+                    <select id="voiceoverFormat">
+                        <option value="paragraph">စာပိုဒ်ခွဲ</option>
+                        <option value="sentence">စာကြောင်းခွဲ</option>
+                        <option value="timestamp">အချိန်ပါ</option>
+                    </select>
+                </div>
+                <button id="generateVoiceoverBtn" class="btn btn-primary">Voice Over Script ထုတ်ပေးမှု</button>
+                <div id="voiceoverPreview" class="preview-box"></div>
+                <button id="downloadVoiceoverBtn" class="btn btn-secondary" style="display:none;">Voice Over Script Download လုပ်မှု</button>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="stats-section">
+                <h2>စာသားအချက်အလက်</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">စာလုံးရေ:</span>
+                        <span class="stat-value" id="statWords">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">စာကြောင်းရေ:</span>
+                        <span class="stat-value" id="statLines">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">စာပိုဒ်ရေ:</span>
+                        <span class="stat-value" id="statParagraphs">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">အခြေခံအချိန်:</span>
+                        <span class="stat-value" id="statDuration">0:00</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 m recap - မြန်မာ Movie Recap Tool | GitHub မှာ အလွယ်တကူ အသုံးပြုနိုင်ပါတယ်</p>
+        </footer>
     </div>
 
-    <div id="res" style="margin-top: 20px; display: none;">
-        <p>ဘာသာပြန်စာသား:</p>
-        <textarea id="out" style="width: 100%; height: 100px; background: #000; color: #0f0; padding: 10px;"></textarea>
-        <button onclick="copyOut()" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; margin-top: 5px;">Copy ကူးရန်</button>
-    </div>
-
-    <script>
-        function runApp() {
-            var file = document.getElementById('vid').files[0];
-            if(!file) { alert('ဗီဒီယိုဖိုင် ရွေးပေးပါ'); return; }
-            document.getElementById('res').style.display = 'block';
-            document.getElementById('out').value = "00:01 - AI ဘာသာပြန်စတင်ပါပြီ...\n00:05 - ဗီဒီယိုဖိုင် - " + file.name;
-        }
-        function copyOut() {
-            var t = document.getElementById('out');
-            t.select();
-            document.execCommand('copy');
-            alert('Copy ကူးပြီးပါပြီ');
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
