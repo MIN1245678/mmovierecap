@@ -1,90 +1,170 @@
-<!DOCTYPE html>
-<html lang="my">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>m recap - မြန်မာ Movie Recap Tool</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>m recap</h1>
-            <p>မြန်မာ Movie Recap Tool - SRT & Voice Over Generator</p>
-        </header>
+// DOM Elements
+const recapText = document.getElementById('recapText');
+const wordCount = document.getElementById('wordCount');
+const generateSrtBtn = document.getElementById('generateSrtBtn');
+const downloadSrtBtn = document.getElementById('downloadSrtBtn');
+const srtPreview = document.getElementById('srtPreview');
+const generateVoiceoverBtn = document.getElementById('generateVoiceoverBtn');
+const downloadVoiceoverBtn = document.getElementById('downloadVoiceoverBtn');
+const voiceoverPreview = document.getElementById('voiceoverPreview');
+const srtDuration = document.getElementById('srtDuration');
+const voiceoverFormat = document.getElementById('voiceoverFormat');
 
-        <main>
-            <!-- Input Section -->
-            <section class="input-section">
-                <h2>အဆင့် ၁: Movie Recap စာသား ထည့်သွင်းပါ</h2>
-                <textarea 
-                    id="recapText" 
-                    placeholder="Movie recap စာသားကို ဒီမှာ ကူးယူထည့်သွင်းပါ... (စာလုံးရေ ၂၆,၀၀၀ အထိ)"
-                    maxlength="26000"
-                    rows="10"
-                ></textarea>
-                <div class="word-count">
-                    စာလုံးရေ: <span id="wordCount">0</span> / 26,000
-                </div>
-            </section>
+// Statistics
+const statWords = document.getElementById('statWords');
+const statLines = document.getElementById('statLines');
+const statParagraphs = document.getElementById('statParagraphs');
+const statDuration = document.getElementById('statDuration');
 
-            <!-- SRT Generator Section -->
-            <section class="srt-section">
-                <h2>အဆင့် ၂: SRT ဖိုင် ထုတ်ပေးမှု</h2>
-                <div class="form-group">
-                    <label for="srtDuration">အညွှန်းတစ်ခုစီ ကြာချိန် (စက္ကန့်):</label>
-                    <input type="number" id="srtDuration" value="5" min="1" max="10">
-                </div>
-                <button id="generateSrtBtn" class="btn btn-primary">SRT ဖိုင် ထုတ်ပေးမှု</button>
-                <div id="srtPreview" class="preview-box"></div>
-                <button id="downloadSrtBtn" class="btn btn-secondary" style="display:none;">SRT ဖိုင် Download လုပ်မှု</button>
-            </section>
+// Data storage
+let srtData = '';
+let voiceoverData = '';
 
-            <!-- Voice Over Section -->
-            <section class="voiceover-section">
-                <h2>အဆင့် ၃: Voice Over Script ထုတ်ပေးမှု</h2>
-                <div class="form-group">
-                    <label for="voiceoverFormat">Format ရွေးချယ်ပါ:</label>
-                    <select id="voiceoverFormat">
-                        <option value="paragraph">စာပိုဒ်ခွဲ</option>
-                        <option value="sentence">စာကြောင်းခွဲ</option>
-                        <option value="timestamp">အချိန်ပါ</option>
-                    </select>
-                </div>
-                <button id="generateVoiceoverBtn" class="btn btn-primary">Voice Over Script ထုတ်ပေးမှု</button>
-                <div id="voiceoverPreview" class="preview-box"></div>
-                <button id="downloadVoiceoverBtn" class="btn btn-secondary" style="display:none;">Voice Over Script Download လုပ်မှု</button>
-            </section>
+// Event Listeners
+recapText.addEventListener('input', updateStats);
+generateSrtBtn.addEventListener('click', generateSRT);
+downloadSrtBtn.addEventListener('click', downloadSRT);
+generateVoiceoverBtn.addEventListener('click', generateVoiceOver);
+downloadVoiceoverBtn.addEventListener('click', downloadVoiceOver);
 
-            <!-- Statistics Section -->
-            <section class="stats-section">
-                <h2>စာသားအချက်အလက်</h2>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-label">စာလုံးရေ:</span>
-                        <span class="stat-value" id="statWords">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">စာကြောင်းရေ:</span>
-                        <span class="stat-value" id="statLines">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">စာပိုဒ်ရေ:</span>
-                        <span class="stat-value" id="statParagraphs">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">အခြေခံအချိန်:</span>
-                        <span class="stat-value" id="statDuration">0:00</span>
-                    </div>
-                </div>
-            </section>
-        </main>
+// Update statistics
+function updateStats() {
+    const text = recapText.value;
+    
+    // Word count
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+    wordCount.textContent = words;
+    statWords.textContent = words;
+    
+    // Line count
+    const lines = text.trim().split('\n').length;
+    statLines.textContent = lines;
+    
+    // Paragraph count
+    const paragraphs = text.trim().split(/\n\n+/).filter(p => p.length > 0).length;
+    statParagraphs.textContent = paragraphs;
+    
+    // Estimated duration (assuming ~150 words per minute)
+    const minutes = Math.ceil(words / 150);
+    const seconds = ((words % 150) / 150) * 60;
+    statDuration.textContent = `${minutes}:${Math.floor(seconds).toString().padStart(2, '0')}`;
+}
 
-        <footer>
-            <p>&copy; 2024 m recap - မြန်မာ Movie Recap Tool | GitHub မှာ အလွယ်တကူ အသုံးပြုနိုင်ပါတယ်</p>
-        </footer>
-    </div>
+// Generate SRT file
+function generateSRT() {
+    const text = recapText.value.trim();
+    
+    if (!text) {
+        alert('အရင် Movie Recap စာသားကို ထည့်သွင်းပါ');
+        return;
+    }
+    
+    const duration = parseInt(srtDuration.value) || 5;
+    const sentences = text.match(/[^။!?]+[။!?]+/g) || [text];
+    
+    let srt = '';
+    let timeStart = 0;
+    let index = 1;
+    
+    sentences.forEach((sentence) => {
+        const trimmed = sentence.trim();
+        if (trimmed.length === 0) return;
+        
+        const timeEnd = timeStart + duration;
+        const startTime = formatTime(timeStart);
+        const endTime = formatTime(timeEnd);
+        
+        srt += `${index}\n`;
+        srt += `${startTime} --> ${endTime}\n`;
+        srt += `${trimmed}\n\n`;
+        
+        timeStart = timeEnd;
+        index++;
+    });
+    
+    srtData = srt;
+    srtPreview.textContent = srt;
+    srtPreview.classList.add('active');
+    downloadSrtBtn.style.display = 'inline-block';
+}
 
-    <script src="script.js"></script>
-</body>
-</html>
+// Generate Voice Over script
+function generateVoiceOver() {
+    const text = recapText.value.trim();
+    
+    if (!text) {
+        alert('အရင် Movie Recap စာသားကို ထည့်သွင်းပါ');
+        return;
+    }
+    
+    const format = voiceoverFormat.value;
+    let voiceover = '';
+    
+    if (format === 'paragraph') {
+        voiceover = text.split(/\n\n+/)
+            .filter(p => p.length > 0)
+            .map((p, i) => `[အပိုဒ် ${i + 1}]\n${p}`)
+            .join('\n\n');
+    } else if (format === 'sentence') {
+        const sentences = text.match(/[^။!?]+[။!?]+/g) || [text];
+        voiceover = sentences
+            .map((s, i) => `[စာကြောင်း ${i + 1}]\n${s.trim()}`)
+            .join('\n\n');
+    } else if (format === 'timestamp') {
+        const sentences = text.match(/[^။!?]+[။!?]+/g) || [text];
+        let timeStart = 0;
+        voiceover = sentences
+            .map((s, i) => {
+                const timeEnd = timeStart + 5;
+                const time = `${formatTime(timeStart)} - ${formatTime(timeEnd)}`;
+                timeStart = timeEnd;
+                return `[${time}]\n${s.trim()}`;
+            })
+            .join('\n\n');
+    }
+    
+    voiceoverData = voiceover;
+    voiceoverPreview.textContent = voiceover;
+    voiceoverPreview.classList.add('active');
+    downloadVoiceoverBtn.style.display = 'inline-block';
+}
+
+// Format time to HH:MM:SS,mmm
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    const ms = Math.floor((seconds % 1) * 1000);
+    
+    return `${pad(hours)}:${pad(minutes)}:${pad(secs)},${pad(ms, 3)}`;
+}
+
+// Pad numbers
+function pad(num, length = 2) {
+    return num.toString().padStart(length, '0');
+}
+
+// Download SRT file
+function downloadSRT() {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(srtData));
+    element.setAttribute('download', 'movie-recap.srt');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+// Download Voice Over script
+function downloadVoiceOver() {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(voiceoverData));
+    element.setAttribute('download', 'voice-over-script.txt');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+// Initialize
+updateStats();
